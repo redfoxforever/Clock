@@ -60,67 +60,43 @@ for (let i = 0; i < tabsLink.length; i++) {
 let swS = document.querySelector('.stopwatch__seconds')
 let swM = document.querySelector('.stopwatch__minutes')
 let swH = document.querySelector('.stopwatch__hours')
-
 let secBtn = document.querySelector('.stopwatch__btn')
 let tabsLinkSpan = document.querySelector('.tabsLink__span')
 
-let sec = 0,
-    min = 0,
-    hrs = 0,
-    interval;
+let stop;
 
+secBtn.addEventListener('click', function () {
 
-function countSec() {
-    sec++
-    swS.innerText = sec > 9 ? sec : `0${sec}`
-    if (sec > 60) {
-        sec = 0;
-        min++
+    if (this.innerHTML == "start") {
+        this.innerHTML = "stop"
+        tabsLinkSpan.classList.add('active')
+        stopWatch()
+    } else if (this.innerHTML == "stop") {
+        this.innerHTML = "clear"
+        tabsLinkSpan.classList.remove('active')
+        tabsLinkSpan.classList.add('active_clear')
+        clearInterval(stop)
+    } else if (this.innerHTML == "clear") {
+        this.innerHTML = "start"
+        tabsLinkSpan.classList.remove('active_clear')
+        swS.innerHTML = 0
+        swM.innerHTML = 0
+        swH.innerHTML = 0
     }
-    swM.innerText = min > 9 ? min : `0${min}`
-    if (min > 60) {
-        min = 0;
-        hrs++
-    }
-    swH.innerText = hrs
-}
-
-function intervalFunc() {
-    interval = setInterval(countSec, 100)
-}
-
-secBtn.addEventListener('click', () => {
-    clearInterval(interval)
-    intervalFunc()
-    startBtnFunc()
-
-    secBtn.addEventListener('click', () => {
-        stopBtnFunc()
-        clearInterval(interval);
-
-        secBtn.addEventListener('click', () => {
-            clearInterval(interval)
-            clearBtnFunc()    
-        })
-    })
 })
 
-function startBtnFunc() {
-    tabsLinkSpan.classList.add('active')
-    secBtn.innerText = 'stop'
-}
+function stopWatch() {
+    swS.innerHTML++
 
-function stopBtnFunc() {
-    tabsLinkSpan.classList.remove('active')
-    tabsLinkSpan.classList.add('active_clear')
-    secBtn.innerText = 'clear'
-}
+    if (swS.innerHTML > 59) {
+        swS.innerHTML = 0
+        swM.innerHTML++
+    } else if (swM.innerHTML > 59) {
+        swM.innerHTML = 0
+        swH++
+    }
 
-function clearBtnFunc() {
-    sec = 0, min = 0, hrs = 0
-    swS.textContent = "0"
-    swM.textContent = "0"
-    swH.textContent = "0"
-    tabsLinkSpan.classList.remove('active_clear')
-    secBtn.innerText = 'start'
+    stop = setTimeout(() => {
+        stopWatch()
+    }, 100);
 }
